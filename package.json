@@ -1,0 +1,14 @@
+{
+  "name": "reacl-bind",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "shadow-cljs": "2.15.12"
+  },
+  "dependencies": {
+    "create-react-class": "15.7.0",
+    "react": "16.14.0",
+    "react-dom": "16.14.0",
+    "react-test-renderer": "16.14.0"
+  }
+}

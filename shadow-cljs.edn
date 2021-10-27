@@ -1,0 +1,20 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+
+ :dev-http {8080 "target/"}
+
+ :dependencies
+ [[org.clojure/clojure "1.9.0" :scope "provided"]
+  [org.clojure/clojurescript "1.9.293" :scope "provided"]
+  [de.active-group/reacl-c "0.10.6"]
+  [de.active-group/reacl-c-basics "0.10.1"]
+  [cljs-ajax "0.8.4"]]
+
+ :builds
+ {:app {:output-dir "target/"
+        :asset-path "."
+        :target :browser
+        :modules {:main {:init-fn code.app/init}}}}}

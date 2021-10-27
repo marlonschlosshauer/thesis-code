@@ -1,6 +1,5 @@
 (ns code.bind
-  (:require [reacl-c.core :as c :include-macros true])
-  (:require-macros [code.macros.macroland :as ml]))
+  (:require [reacl-c.core :as c :include-macros true]))
 
 (defrecord CommitAction [payload])
 (defn make-commit-action

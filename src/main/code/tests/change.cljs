@@ -6,34 +6,35 @@
 
 (defn get-position-in-queue []
   (js/setTimeout
-   #(c/return :action {:pos (rand-int 100)})
+   (fn []
+     (let [pos (rand-int 100)]
+       (println pos)
+       (c/return :action {:pos pos})))
    3000))
 
-(defn next-button []
-  (dom/button {:onclick (fn [] (c/return :action (b/make-commit-action)))} "Next"))
+(c/defn-item next-button [cb]
+  (dom/button {:onclick (fn [] (c/return :action (b/make-commit-action (cb))))} "Next"))
 
-(defn greeting [greeting]
+(c/defn-item greeting [greeting]
   (dom/div
    (dom/h2 "Greeting:" (pr-str greeting))
-   (next-button)))
+   (next-button get-position-in-queue)))
 
-(defn waiting [pos]
+(c/defn-item waiting [pos]
   (dom/div
    (dom/h2 "Your position in queue is " (pr-str pos))
-   (next-button)))
+   (next-button (fn [] ()))))
 
-(defn goodbye []
+(c/defn-item goodbye []
   (dom/div
    (dom/h2 "Goodbye :)")))
 
-(defn main []
+(c/defn-item main []
   (c/local-state
    {:greeting "nihao"}
    (b/bind
     (greeting {:greeting "nihao"})
     (fn []
-      (b/bind (c/empty get-position-in-queue)
-               (fn []
-                 (b/bind (waiting 12)
-                          (fn []
-                            (goodbye)))))))))
+      (b/bind (waiting 12)
+              (fn []
+                (goodbye)))))))

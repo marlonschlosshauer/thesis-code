@@ -3,10 +3,11 @@
             [code.tests.current :as current]
             [code.tests.future :as future]
             [code.tests.change :as change]
-            [code.tests.stress :as stress]))
+            [code.tests.stress :as stress]
+            [code.tests.macro-test :as mtest]))
 
 (defn init []
   (main/run (.getElementById js/document "app")
-  (stress/main-but-no-tra 0)
-  {:initial-state {}}))
+  (stress/main 0)
+  {:initial-state {:dressing "salad"}}))
 

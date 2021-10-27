@@ -27,11 +27,15 @@
    (c/dynamic
     (fn [[outter inner]]
       (c/handle-action
-       ;; Should we move to next step?
-       (if (not (:next inner))
-         item
-         ;; TODO: focus on outter state
-         (handler (:value inner)))
+       (c/focus
+        ;; Do not polute state with :next state
+        (fn [] (or outter []))
+        ;; Should we move to next step?
+        (if (not (:next inner))
+          item
+          ;; TODO: Trampoline handler up!
+          ;;(fn [] (handler (:value inner)))))
+          (handler (:value inner))))
        (fn [[outter inner] msg]
          (c/return :state
                    (if (commit-action? msg)
@@ -41,7 +45,7 @@
 (defn tra [thunk]
   (fn [args]
     (loop [result (thunk args)]
-      ;;(println {:result result})
+      (println {:origin "loop" :result result})
       (if (not (fn? result))
         result
         (recur (result))))))

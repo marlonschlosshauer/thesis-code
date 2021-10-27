@@ -5,9 +5,13 @@
             [code.bind :as b]))
 
 (c/defn-item stress [val]
-  (dom/div
-   (dom/h2 (pr-str {:val val :now (.now js/Date)}))
-   (dom/button {:onclick (fn [state action] (c/return :action (b/make-commit-action (+ val 1)))) :id "continue"} "click me")))
+  (c/local-state
+   {:now (.now js/Date)}
+   (c/dynamic
+    (fn [[outter inner]]
+      (dom/div
+       (dom/h2 (pr-str {:val val :now (:now inner)  :outter outter}))
+       (dom/button {:onclick (fn [state action] (c/return :action (b/make-commit-action (+ val 1)))) :id "continue"} "click me"))))))
 
 (defn strss [val]
   (b/bind (stress val)

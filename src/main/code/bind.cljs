@@ -29,7 +29,7 @@
       (c/handle-action
        (c/focus
         ;; Do not polute state with :next state
-        (fn [] (or outter []))
+        (fn [[o i]] (if (nil? o) [] [o]))
         ;; Should we move to next step?
         (if (not (:next inner))
           item

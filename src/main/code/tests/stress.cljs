@@ -2,7 +2,8 @@
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.main :as main]
             [reacl-c.dom :as dom]
-            [code.bind :as b]))
+            [code.bind :as b]
+            [code.tests.util :as util]))
 
 (c/defn-item stress [val]
   (c/local-state
@@ -14,8 +15,8 @@
        (dom/button {:onclick (fn [state action] (c/return :action (b/make-commit-action (+ val 1)))) :id "continue"} "click me"))))))
 
 (defn strss [val]
-  (b/bind (stress val)
-            strss))
+  (b/bind (util/wrap-state (stress val))
+          strss))
 
 (defn main [val]
   ((b/tra strss) val))

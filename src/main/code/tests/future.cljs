@@ -45,7 +45,7 @@
 (c/def-item done
   (dom/h2 "Successfully registered!"))
 
-(c/def-item signup-process
+(c/def-item main
   (b/bind personal-info
          (fn [personal]
            (b/bind create-and-send-verification-code

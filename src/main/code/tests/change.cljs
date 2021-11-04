@@ -2,7 +2,8 @@
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.main :as main]
             [reacl-c.dom :as dom]
-            [code.bind :as b]))
+            [code.bind :as b]
+            [code.tests.util :as util]))
 
 (defn get-position-in-queue []
   (js/setTimeout
@@ -21,20 +22,21 @@
    (next-button get-position-in-queue)))
 
 (c/defn-item waiting [pos]
-  (dom/div
-   (dom/h2 "Your position in queue is " (pr-str pos))
-   (next-button (fn [] ()))))
+  (c/local-state
+   {:test 1}
+   (dom/div
+    (dom/h2 "Your position in queue is " (pr-str pos))
+    (next-button (fn [] nil)))))
 
 (c/defn-item goodbye []
   (dom/div
    (dom/h2 "Goodbye :)")))
 
 (c/defn-item main []
-  (c/local-state
-   {:greeting "nihao"}
+  (util/wrap-state
    (b/bind
-    (greeting {:greeting "nihao"})
+    (util/wrap-state (greeting {:greeting "nihao"}))
     (fn []
-      (b/bind (waiting 12)
+      (b/bind (util/wrap-state (waiting 12))
               (fn []
-                (goodbye)))))))
+                (util/wrap-state (goodbye))))))))

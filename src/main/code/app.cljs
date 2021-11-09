@@ -2,11 +2,12 @@
   (:require [reacl-c.main :as main]
             [reacl-c.core :as c :include-macros true]
             [reacl-c.dom :as dom]
-            [code.tests.current :as current]
-            [code.tests.future :as future]
-            [code.tests.change :as change]
-            [code.tests.stress :as stress]
-            [code.tests.macro-test :as mtest]))
+            [code.scenes.current :as current]
+            [code.scenes.future :as future]
+            [code.scenes.change :as change]
+            [code.scenes.stress :as stress]
+            [code.scenes.beta :as beta]
+            [code.scenes.macro-test :as mtest]))
 
 
 (comment
@@ -36,6 +37,7 @@
   (main/run (.getElementById js/document "app")
     ;;(change/main)
     ;;future/main
-    display-tests
+    ;;display-tests
+    beta/main
     {:initial-state {:dressing "salad"}}))
 

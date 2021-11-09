@@ -1,15 +1,15 @@
-(ns code.tests.change
+(ns code.scenes.change
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.main :as main]
             [reacl-c.dom :as dom]
             [code.bind :as b]
-            [code.tests.util :as util]))
+            [code.scenes.util :as util]))
 
 (defn get-position-in-queue []
   (js/setTimeout
    (fn []
      (let [pos (rand-int 100)]
-       (println pos)
+       ;;(println pos)
        (c/return :action {:pos pos})))
    3000))
 

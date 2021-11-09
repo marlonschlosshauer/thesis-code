@@ -45,7 +45,7 @@
 (defn tra [thunk]
   (fn [args]
     (loop [result (thunk args)]
-      (println {:origin "loop" :result result})
+      ;;(println {:origin "loop" :result result})
       (if (not (fn? result))
         result
         (recur (result))))))

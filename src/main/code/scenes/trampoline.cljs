@@ -1,9 +1,9 @@
-(ns code.tests.trampoline
+(ns code.scenes.trampoline
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.main :as main]
             [reacl-c.dom :as dom]
             [code.bind :as b]
-            [code.tests.future :as future]))
+            [code.scenes.future :as future]))
 
 (c/def-item main
   ((b/tra (b/sbind future/personal-info

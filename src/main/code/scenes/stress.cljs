@@ -1,9 +1,9 @@
-(ns code.tests.stress
+(ns code.scenes.stress
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.main :as main]
             [reacl-c.dom :as dom]
             [code.bind :as b]
-            [code.tests.util :as util]))
+            [code.scenes.util :as util]))
 
 (c/defn-item stress [val]
   (c/local-state

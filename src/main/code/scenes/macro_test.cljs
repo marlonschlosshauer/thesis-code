@@ -1,10 +1,10 @@
-(ns code.tests.macro-test
+(ns code.scenes.macro-test
   ;;(:require-macros [code.macros.macroland :as ml])
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.main :as main]
             [reacl-c.dom :as dom]
             [code.bind :as b]
-            [code.tests.future :as fut]
+            [code.scenes.future :as fut]
             [code.macros.macroland :as m :include-macros true]))
 
 

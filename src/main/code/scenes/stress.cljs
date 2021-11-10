@@ -15,10 +15,10 @@
        (dom/h2 (pr-str {:val val :now (:now inner) :outter outter}))
        (dom/button {:onclick (fn [state action] (c/return :action (next/make-commit (+ val 1)))) :id "continue"} "click me"))))))
 
-(defn evil-stress [val]
-  (next/make-bind (stress val) evil-stress))
+(defn bundle-stress [val]
+  (next/make-bind (stress val) bundle-stress))
 
-(defn evil-main [val]
-  (next/evil-runner (evil-stress val)))
+(defn main [val]
+  (next/runner (bundle-stress val)))
 
 ;; const b = setInterval(() => document.getElementById('continue').click(), 5);

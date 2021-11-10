@@ -19,7 +19,7 @@
             beta/main)
    (dom/div {:style {:border "1px solid black" :padding "15px" :margin "5px"}}
             (dom/h1 "stress")
-            (stress/evil-main 0))))
+            (stress/main 0))))
 
 (defn init []
   (main/run (.getElementById js/document "app")

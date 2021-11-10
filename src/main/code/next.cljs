@@ -48,7 +48,7 @@
              (if (commit? ac)
                (c/return :state (assoc st :result (commit-payload ac))))))))))))
 
-(defn evil-runner [prog]
+(defn runner [prog]
   ;; TODO: Assert (item? prog)
   (c/isolate-state
    prog

@@ -46,7 +46,7 @@
   (dom/h2 "Successfully registered!"))
 
 (c/def-item signup-process
-  (next/evil-runner
+  (next/runner
    (next/make-bind personal-info
                    (fn [personal]
                      (next/make-bind create-and-send-verification-code

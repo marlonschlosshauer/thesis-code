@@ -22,45 +22,44 @@
 (defn bind-continuation [b] (:continuation b))
 (defn bind-item [b] (:item b))
 
-(defn runner [prog]
-  ;; TODO: Assert (item? prog)
-  (c/isolate-state
-   {:current-programm (bind-item prog)
-    :result nil
-    :continuation (bind-continuation prog)}
-   (c/dynamic
-    (fn [st]
-      (if (:result st)
-         ;; We have result, so go further down
-         (let [next ((:continuation st) (:result st))]
-           ;; Overwrite local-state with result of cont to recur
-           ;; TODO: Cannot just return, need to give item
-           ;; TODO: once ironically only runs once
-           (c/fragment
-            (c/once #(c/return :state {:current-programm (bind-item next)
-                                       :result nil
-                                       :continuation (bind-continuation next)}))))
-         ;; We don't have result, display prog until commit arrives
-         (c/handle-action
-          (:current-programm st)
-          (fn [_ ac]
-            (if (commit? ac)
-              (c/return :state (assoc st :result (commit-payload ac)))))))))))
+(comment
+  (defn runner [prog]
+    ;; TODO: Assert (item? prog)
+    (c/isolate-state
+     {:current-programm (bind-item prog)
+      :result nil
+      :continuation (bind-continuation prog)}
+     (c/dynamic
+      (fn [st]
+        (if (:result st)
+          ;; We have result, so go further down
+          (let [next ((:continuation st) (:result st))]
+            ;; Overwrite local-state with result of cont to recur
+            ;; TODO: Cannot just return, need to give item
+            ;; TODO: once ironically only runs once
+            (c/fragment
+             (c/once #(c/return :state {:current-programm (bind-item next)
+                                        :result nil
+                                        :continuation (bind-continuation next)}))))
+          ;; We don't have result, display prog until commit arrives
+          (c/handle-action
+           (:current-programm st)
+           (fn [_ ac]
+             (if (commit? ac)
+               (c/return :state (assoc st :result (commit-payload ac))))))))))))
 
 (defn evil-runner [prog]
   ;; TODO: Assert (item? prog)
   (c/isolate-state
-   {:item (bind-item prog)
-    :continuation (bind-continuation prog)}
+   prog
    (c/dynamic
     (fn [st]
       (c/handle-action
-       ;; TODO: rework to use bind? to check for final item in state
-       (if (:item st)
-          (:item st)
-          st)
-       (fn [_ ac]
-         (if (commit? ac)
+       ;; TODO: Focus on outter state
+       (if (bind? st) (bind-item st) st)
+       (fn [st ac]
+         (if (and (commit? ac) (bind? st))
+           ;; Save resulting bind/element in state
            (c/return :state ((:continuation st) (commit-payload ac))))))))))
 
 

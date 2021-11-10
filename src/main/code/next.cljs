@@ -56,11 +56,9 @@
     (fn [st]
       (c/handle-action
        ;; TODO: rework to use bind? to check for final item in state
-       (dom/div
-        (dom/h4 (pr-str st))
-        (if (:item st)
+       (if (:item st)
           (:item st)
-          st))
+          st)
        (fn [_ ac]
          (if (commit? ac)
            (c/return :state ((:continuation st) (commit-payload ac))))))))))

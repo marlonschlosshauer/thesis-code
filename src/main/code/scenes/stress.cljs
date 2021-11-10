@@ -3,7 +3,8 @@
             [reacl-c.main :as main]
             [reacl-c.dom :as dom]
             [code.bind :as b]
-            [code.scenes.util :as util]))
+            [code.scenes.util :as util]
+            [code.next :as next]))
 
 (c/defn-item stress [val]
   (c/local-state
@@ -11,17 +12,13 @@
    (c/dynamic
     (fn [[outter inner]]
       (dom/div
-       (dom/h2 (pr-str {:val val :now (:now inner)  :outter outter}))
-       (dom/button {:onclick (fn [state action] (c/return :action (b/make-commit-action (+ val 1)))) :id "continue"} "click me"))))))
+       (dom/h2 (pr-str {:val val :now (:now inner) :outter outter}))
+       (dom/button {:onclick (fn [state action] (c/return :action (next/make-commit (+ val 1)))) :id "continue"} "click me"))))))
 
-(defn strss [val]
-  (b/bind (util/wrap-state (stress val))
-          strss))
+(defn evil-stress [val]
+  (next/make-bind (stress val) evil-stress))
 
-(defn main [val]
-  ((b/tra strss) val))
-
-(defn main-but-no-tra [val]
-  (strss val))
+(defn evil-main [val]
+  (next/evil-runner (evil-stress val)))
 
 ;; const b = setInterval(() => document.getElementById('continue').click(), 5);

@@ -8,7 +8,7 @@
   (c/dynamic
    (fn [state]
      (dom/div
-      (dom/div (pr-str state))
+      (dom/samp (pr-str state))
       item))))
 
 (defn logger [msg cont]

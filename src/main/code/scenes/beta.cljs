@@ -2,7 +2,8 @@
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.main :as main]
             [reacl-c.dom :as dom]
-            [code.next :as next]))
+            [code.next :as next]
+            [code.scenes.util :as util]))
 
 (c/def-item personal-info
   (c/local-state
@@ -51,23 +52,4 @@
                      (next/make-bind create-and-send-verification-code
                                      (fn [code] (dom/div done)))))))
 
-(comment
-  (let [verification (next/make-bind create-and-send-verification-code
-                                  (fn [code] (dom/div done)))]
-  ((next/bind-continuation verification) "")))
-
-(c/def-item not-monster
-  (c/isolate-state
-   {:curr "a" :result nil}
-   (c/dynamic
-    (fn [st]
-      (dom/div
-       (dom/h2 (pr-str (:result st)))
-       (dom/button {:onclick (fn [st ac] (c/return :state (assoc st :result(.now js/Date))))}
-                   "Send it"))))))
-
-
-(c/def-item main
-  signup-process
-  ;;not-monster
-  )
+(c/def-item main signup-process)

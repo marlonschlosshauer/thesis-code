@@ -54,16 +54,4 @@
                        (dom/h2 (pr-str (merge personal code)))
                        done))))))
 
-(comment
-  (c/def-item retrofit-signup-process
-    ;; Assert  failed: (base/item? item)
-    ;; Erwartet curr/personal-info
-    ;; Bekommt  (curr/personal-info)
-    ;; TODO: bind! mit beiden kompatible machen (?)
-  (b/bind (b/action->commit-action curr/personal-info)
-           (fn [personal]
-             (b/bind (b/action->commit-action curr/create-and-send-verification-code)
-                      (fn [code]
-                        (dom/div
-                         (dom/h2 (pr-str (merge personal code)))
-                         done)))))))
+

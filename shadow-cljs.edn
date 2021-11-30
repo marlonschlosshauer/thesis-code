@@ -17,4 +17,4 @@
  {:app {:output-dir "target/"
         :asset-path "."
         :target :browser
-        :modules {:main {:init-fn code.app/init}}}}}
+        :modules {:main {:init-fn app.home/init}}}}}

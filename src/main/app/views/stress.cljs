@@ -1,10 +1,9 @@
-(ns code.scenes.stress
+(ns app.views.stress
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.main :as main]
             [reacl-c.dom :as dom]
-            [code.bind :as b]
-            [code.scenes.util :as util]
-            [code.next :as next]))
+            [app.views.util :as util]
+            [code.bind :as bind]))
 
 (c/defn-item stress [val]
   (c/local-state
@@ -13,12 +12,12 @@
     (fn [[outter inner]]
       (dom/div
        (dom/h2 (pr-str {:val val :now (:now inner) :outter outter}))
-       (dom/button {:onclick (fn [state action] (c/return :action (next/make-commit (+ val 1)))) :id "continue"} "click me"))))))
+       (dom/button {:onclick (fn [state action] (c/return :action (bind/make-commit (+ val 1)))) :id "continue"} "click me"))))))
 
 (defn bundle-stress [val]
-  (next/make-bind (stress val) bundle-stress))
+  (bind/make-bind (stress val) bundle-stress))
 
 (defn main [val]
-  (next/runner (bundle-stress val)))
+  (bind/runner (bundle-stress val)))
 
 ;; const b = setInterval(() => document.getElementById('continue').click(), 5);

@@ -76,7 +76,7 @@
       (if (commit? ac) (c/return :state (f (commit-payload ac)))))))
   )
 
-(defn bind [prog f id]
+(defn bind [prog f]
   ;; show prog until commit happens then call f with result
   ;; TODO: break loop after initial commit
   (return
@@ -88,7 +88,6 @@
         (show (:prog st))
         (fn [st ac]
           ;; If already called, let commit float upwards to other bind
-          (println {:id id :ac ac})
           (if (and (commit? ac) (not (:called st)))
             ;; TODO: Fix f call at end
             ;; Scenario: commit already responded to, how to bubble up value?

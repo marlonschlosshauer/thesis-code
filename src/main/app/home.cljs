@@ -3,7 +3,8 @@
             [reacl-c.core :as c :include-macros true]
             [reacl-c.dom :as dom]
             [app.views.stress :as stress]
-            [app.views.registration :as registration]))
+            [app.views.registration :as registration]
+            [app.views.combinations :as combinations]))
 
 (c/def-item display-views
   (dom/div
@@ -16,6 +17,6 @@
 
 (defn init []
   (main/run (.getElementById js/document "app")
-    display-views
+    combinations/main
     {:initial-state {:dressing "salad"}}))
 

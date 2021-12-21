@@ -5,6 +5,7 @@
 
 (defrecord Commit [payload])
 (defn make-commit
+  "A commit is data that will be emmitted by a Prog to continue the flow"
   ([]
    (map->Commit {}))
   ([payload]
@@ -13,7 +14,6 @@
 (defn commit? [x] (instance? Commit x))
 (defn commit-payload [commit] (:payload commit))
 
-;; data Prog a :: P Item a | B Bind a
 ;; Bind :: Prog a -> (a -> Prog b) -> Bind b
 (defrecord Bind [prog continuation])
 (defn make-bind
@@ -28,10 +28,14 @@
 (defn prog? [x] (instance? Prog x))
 (defn make-prog [item] (->Prog item))
 
-(defn return [item]
+(defn return
+  "Signify that this Item is a Prog, therefore emitting a commit at some point"
+  [item]
   (make-prog item))
 
-(defn show [prog]
+(defn show
+  "Display Item inside of a Prog"
+  [prog]
   (:item prog))
 
 ;; runner :: Bind -> Item

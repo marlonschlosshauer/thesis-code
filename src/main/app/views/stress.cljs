@@ -15,7 +15,7 @@
        (dom/button {:onclick (fn [state action] (c/return :action (bind/make-commit (+ val 1)))) :id "continue"} "click me"))))))
 
 (defn bundle-stress [val]
-  (bind/make-bind (stress val) bundle-stress))
+  (bind/make-bind (bind/make-prog (stress val)) bundle-stress))
 
 (defn main [val]
   (bind/runner (bundle-stress val)))

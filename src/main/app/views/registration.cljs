@@ -16,8 +16,8 @@
                (dom/input {:placeholder "name"
                            :value (:name inner)
                            :onChange (fn [[outter inner] e] (c/return :state [outter (assoc inner :name (.. e -target -value))]))}) (dom/input {:placeholder "email"
-                           :value (:email inner)
-                           :onChange (fn [[outter inner] e] (c/return :state [outter (assoc inner :email (.. e -target -value))]))})
+                                                                                                                                                :value (:email inner)
+                                                                                                                                                :onChange (fn [[outter inner] e] (c/return :state [outter (assoc inner :email (.. e -target -value))]))})
                (dom/button {:onclick (fn [state action] (c/return :action (bind/make-commit inner)))
                             :class "confirm-button"
                             :disabled (or (< (count (:name inner)) 1) (< (count (:email inner)) 1))}
@@ -37,19 +37,23 @@
                (dom/input {:placeholder "Code"
                            :value (:entered-code inner)
                            :onChange (fn [[outter inner] e] (c/return :state [outter (assoc inner :entered-code (.. e -target -value))]))})
-               (dom/button {:onclick (fn [state action] (c/return :action (bind/make-commit)))
+               (dom/button {:onclick (fn [[outter inner] action] (c/return :action (bind/make-commit (:entered-code inner))))
                             :class "confirm-button"
                             :disabled (not (== (:entered-code inner) (:code inner)))}
                            "Send code"))))))
 
-(c/def-item done
-  (dom/h2 "Successfully registered!"))
+(c/defn-item done [data]
+  (dom/div
+   (dom/h2 "Successfully registered!")
+   (dom/h3 "Personal data:")
+   (dom/samp (pr-str data))))
 
 (c/def-item signup-process
   (bind/runner
-   (bind/make-bind personal-info
-                   (fn [personal]
-                     (bind/make-bind create-and-send-verification-code
-                                     (fn [code] (dom/div done)))))))
+   (bind/make-bind
+    (bind/make-prog personal-info)
+    (fn [personal]
+      (bind/make-bind (bind/make-prog create-and-send-verification-code)
+                      (fn [code] (dom/div (done {:personal personal :code code}))))))))
 
 (c/def-item main signup-process)

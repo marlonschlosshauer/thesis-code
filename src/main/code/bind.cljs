@@ -13,7 +13,8 @@
 (defn commit? [x] (instance? Commit x))
 (defn commit-payload [commit] (:payload commit))
 
-;; Bind :: Prog a -> (a -> Prog b) -> Bind
+;; data Prog a :: P Item a | B Bind a
+;; Bind :: Prog a -> (a -> Prog b) -> Bind b
 (defrecord Bind [prog continuation])
 (defn make-bind
   [prog continuation]
@@ -34,37 +35,23 @@
   (:item prog))
 
 ;; runner :: Bind -> Item
-(defn runner [b]
-  ;; TODO: Assert (item? prog)
+(defn runner
+  "Show Prog in received Bind until commit happens, then call f from Bind with result"
+  [b]
+  {:pre [(bind? b)]}
   (c/isolate-state
    b
    (c/dynamic
     (fn [st]
       (c/handle-action
-       (if (bind? st)
-         ;; TODO: Focus on outter state
-         (bind-item (show st))
-         st)
+       (cond
+         (bind? st) (show (bind-item st)) ;; TODO: Flatmap?
+         (prog? st) (show st) ;; todo
+         (c/item? st) st)
        (fn [st ac]
          (if (and (commit? ac) (bind? st))
            ;; Save resulting bind/element in state
+           ;; TODO: Fix f call at end
+           ;; Scenario: commit already responded to, how to bubble up value?
+           ;; How do you know if you are done?
            (c/return :state ((:continuation st) (commit-payload ac))))))))))
-
-
-(defn bind [prog f]
-  ;; show prog until commit happens then call f with result
-  ;; TODO: break loop after initial commit
-  (return
-   (c/isolate-state
-    {:prog prog :called false}
-    (c/dynamic
-     (fn [st]
-       (c/handle-action
-        (show (:prog st))
-        (fn [st ac]
-          ;; If already called, let commit float upwards to other bind
-          (if (and (commit? ac) (not (:called st)))
-            ;; TODO: Fix f call at end
-            ;; Scenario: commit already responded to, how to bubble up value?
-            ;; How do you know if you are done?
-            (c/return :state (assoc st :prog (f (commit-payload ac)) :called true))))))))))

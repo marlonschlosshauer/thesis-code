@@ -20,3 +20,8 @@
    (click-me! {}))
   ([args]
    (dom/button {:onclick (fn [_ _] (c/return :action (b/make-commit args)))} "click-me!")))
+
+(defn named-click-me! [name]
+  (dom/div
+    (dom/h3 (str name))
+    (click-me! (str name))))

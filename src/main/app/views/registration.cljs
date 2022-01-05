@@ -15,9 +15,10 @@
                (dom/samp (pr-str inner))
                (dom/input {:placeholder "name"
                            :value (:name inner)
-                           :onChange (fn [[outter inner] e] (c/return :state [outter (assoc inner :name (.. e -target -value))]))}) (dom/input {:placeholder "email"
-                                                                                                                                                :value (:email inner)
-                                                                                                                                                :onChange (fn [[outter inner] e] (c/return :state [outter (assoc inner :email (.. e -target -value))]))})
+                           :onChange (fn [[outter inner] e] (c/return :state [outter (assoc inner :name (.. e -target -value))]))})
+               (dom/input {:placeholder "email"
+                           :value (:email inner)
+                           :onChange (fn [[outter inner] e] (c/return :state [outter (assoc inner :email (.. e -target -value))]))})
                (dom/button {:onclick (fn [state action] (c/return :action (bind/make-commit inner)))
                             :class "confirm-button"
                             :disabled (or (< (count (:name inner)) 1) (< (count (:email inner)) 1))}
@@ -50,10 +51,10 @@
 
 (c/def-item signup-process
   (bind/runner
-   (bind/make-bind
-    (bind/make-prog personal-info)
+   (bind/then
+    (bind/return personal-info)
     (fn [personal]
-      (bind/make-bind (bind/make-prog create-and-send-verification-code)
+      (bind/then (bind/return create-and-send-verification-code)
                       (fn [code] (dom/div (done {:personal personal :code code}))))))))
 
 (c/def-item main signup-process)

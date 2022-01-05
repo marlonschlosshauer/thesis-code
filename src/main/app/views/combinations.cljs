@@ -8,33 +8,29 @@
 ;; Helper function
 (defn item [name]
   (dom/div
-    (dom/h3 (str name))
-    (util/click-me! (str name))))
+   (dom/h3 (str name))
+   (util/click-me! (str name))))
 
 (def left-hand
   ;; (Prog 1 >>= Prog 2) >>= Prog 3
-  (b/make-bind
-   ;; TODO: Not composible because Bind is not a Prog
-   ;; and make-bind wants a Prog
-   (b/make-bind (b/return (item "one")) (fn [_] (b/return (item "two"))))
+  (b/then
+   (b/then
+    (b/return (item "one"))
+    (fn [_] (b/return (item "two"))))
    (fn [_] (item "three"))))
 
 (def right-hand
   ;; Prog 1 >>= (Prog 2 >>= Prog 3)
-  (b/make-bind
+  (b/then
    (b/return (item "one"))
    (fn [_]
-     (b/make-bind (b/return (item "two")) (fn [_] (item "three"))))))
+     (b/then (b/return (item "two")) (fn [_] (item "three"))))))
 
 (c/def-item main
   (dom/div
-   (dom/h1 "combinations")
    (dom/div
     (dom/h3 "left-hand")
-    ;; left-hand :: Bind Bind Prog Item a
-    (b/runner left-hand)
-    )
+    (b/runner left-hand))
    (dom/div
     (dom/h3 "right-hand")
-    ;; right-hand :: Bind Prog a
     (b/runner right-hand))))

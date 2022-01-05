@@ -5,7 +5,7 @@
 
 (defrecord Commit [payload])
 (defn make-commit
-  "A commit is data that will be emmitted by a Prog to continue the flow"
+  "A `commit` is data that will be emmitted by a `Prog` to continue the sequence"
   ([]
    (map->Commit {}))
   ([payload]
@@ -14,11 +14,11 @@
 (defn commit? [x] (instance? Commit x))
 (defn commit-payload [commit] (:payload commit))
 
-;; Bind :: Prog a -> (a -> Prog b) -> Bind b
 (defrecord Bind [prog continuation called])
-;; TODO: auto wrap item with Prog
 (defn make-bind
+  "Takes a `Prog` and a `continuation` of type (a -> Prog b) and returns a Bind"
   [prog continuation]
+  {:pre [(prog? prog)]}
   (->Bind prog continuation false))
 
 (defn bind? [x] (instance? Bind x))
@@ -31,37 +31,34 @@
 (defn prog-item [x] (:item x))
 (defn make-prog [item] (->Prog item))
 
-(defn thena [item cont]
-  (make-bind (if (c/item? item) (make-prog item) item) cont))
-
-;; CPS transformation
-;; on bind: check if left hand is already a bind, re-write to make consumption easier!
-(defn then [prog cont]
+(defn then
+  "Bind a `Prog` to a continuation. Returns a `Bind`. cont should return a `Bind` or `Prog`"
+  [prog cont]
   {:pre [(or (bind? prog) (prog? prog) (c/item? prog))]
    :post [(bind? %)]}
   (if (bind? prog)
+    ;; if left hand is already a bind, swap (csp transformation)
+    ;; bind with item of bind on left hand to not cause nested binds!
     (make-bind (bind-item prog) (fn [x] (then ((bind-continuation prog) x) cont)))
     (make-bind (if (c/item? prog) (make-prog prog) prog) cont)))
 
-(defn bind-or-prog? [x]
-  (or (prog? x) (bind? x)))
-
 (defn return
-  "Signify that this Item is a Prog, therefore emitting a commit at some point"
+  "Signify that this `Item` is a `Prog`, emitting a `commit` at some point"
   [item]
+  {:pre [(c/item? b)]}
   (make-prog item))
 
 (defn show
-  "Display Item inside of Prog"
+  "Display `Item` inside of `Prog` (or `Bind`)"
   [x]
+  {:post [(c/item? %)]}
   (cond
     (prog? x) (prog-item x)
     (bind? x) (prog-item (bind-item x))
     (c/item? x) x))
 
-;; runner :: Bind -> Item
 (defn runner
-  "Show Prog in received Bind until commit happens, then call f from Bind with result"
+  "Show `Prog` (or `Bind`). Returns an `Item`"
   [b]
   {:pre [(bind? b)]}
   (c/isolate-state

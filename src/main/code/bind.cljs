@@ -17,7 +17,10 @@
 (defrecord Prog [item])
 (defn prog? [x] (instance? Prog x))
 (defn prog-item [x] (:item x))
-(defn make-prog [item] (->Prog item))
+(defn make-prog
+  [item]
+  {:pre [(c/item? item)]}
+  (->Prog item))
 
 (defrecord Bind [prog continuation called])
 (defn make-bind
@@ -31,11 +34,11 @@
 (defn bind-item [b] (:prog b))
 (defn bind-called [b] (:called b))
 
-
 (defn then
   "Bind a `Prog` to a continuation. Returns a `Bind`. cont should return a `Bind` or `Prog`"
   [prog cont]
-  {:pre [(or (bind? prog) (prog? prog) (c/item? prog))]
+  {:pre [(and (or (bind? prog) (prog? prog) (c/item? prog))
+              (fn? cont))]
    :post [(bind? %)]}
   (if (bind? prog)
     ;; if left hand is already a bind, swap (csp transformation)
@@ -52,7 +55,8 @@
 (defn show
   "Display `Item` inside of `Prog` (or `Bind`)"
   [x]
-  {:post [(c/item? %)]}
+  {:pre [(or (bind? x) (prog? x) (c/item? x))]
+   :post [(c/item? %)]}
   (cond
     (prog? x) (prog-item x)
     (bind? x) (prog-item (bind-item x))
@@ -61,7 +65,7 @@
 (defn runner
   "Show `Prog` (or `Bind`). Returns an `Item`"
   [b]
-  {:pre [(bind? b)]}
+  {:pre [(or (bind? b) (prog? b))]}
   (c/isolate-state
    b
    (c/dynamic

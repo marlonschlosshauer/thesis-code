@@ -66,19 +66,19 @@
   "Show `Prog` (or `Bind`). Returns an `Item`"
   [b]
   {:pre [(or (bind? b) (prog? b))]}
+  ;; inner state of book-keeping is the bind
   (c/isolate-state
    b
    (c/dynamic
     (fn [st]
       (c/handle-action
+       ;; display item in bind/prog
        (cond
+         ;; TODO: lens
          (bind? st) (show (bind-item st))
-         (prog? st) (show st) ;; todo
+         (prog? st) (show st)
          :else st)
        (fn [st ac]
+         ;; call continuation of bind on commit
          (if (and (commit? ac) (bind? st))
-           ;; Save resulting bind/element in state
-           ;; TODO: Fix f call at end
-           ;; Scenario: commit already responded to, how to bubble up value?
-           ;; How do you know if you are done?
            (c/return :state ((bind-continuation st) (commit-payload ac))))))))))

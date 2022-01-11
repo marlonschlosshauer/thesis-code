@@ -32,7 +32,9 @@
      (b/then
       (b/then
        (item "Prog 1")
-       (fn [] (b/then (item "Prog 2") (fn [] (item "Prog 3")))))
+       (fn []
+         (b/then (item "Prog 2")
+                 (fn [] (item "Prog 3")))))
       (fn [] (item "Prog 4")))
      (fn [] (item "Prog 5"))))))
 
@@ -45,7 +47,7 @@
       (b/then
        (b/then
         (item "Prog 1")
-        (fn [] (item "Prog 2")))
+        (fn [] (item "Prog 2")))
        (fn [] (item "Prog 3")))
       (fn [] (item "Prog 4")))
      (fn [] (item "Prog 5"))))))
@@ -55,3 +57,4 @@
    scene0
    scene1
    scene2))
+

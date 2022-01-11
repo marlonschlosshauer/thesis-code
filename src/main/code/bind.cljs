@@ -14,6 +14,11 @@
 (defn commit? [x] (instance? Commit x))
 (defn commit-payload [commit] (:payload commit))
 
+(defrecord Prog [item])
+(defn prog? [x] (instance? Prog x))
+(defn prog-item [x] (:item x))
+(defn make-prog [item] (->Prog item))
+
 (defrecord Bind [prog continuation called])
 (defn make-bind
   "Takes a `Prog` and a `continuation` of type (a -> Prog b) and returns a Bind"
@@ -26,10 +31,6 @@
 (defn bind-item [b] (:prog b))
 (defn bind-called [b] (:called b))
 
-(defrecord Prog [item])
-(defn prog? [x] (instance? Prog x))
-(defn prog-item [x] (:item x))
-(defn make-prog [item] (->Prog item))
 
 (defn then
   "Bind a `Prog` to a continuation. Returns a `Bind`. cont should return a `Bind` or `Prog`"
@@ -45,7 +46,7 @@
 (defn return
   "Signify that this `Item` is a `Prog`, emitting a `commit` at some point"
   [item]
-  {:pre [(c/item? b)]}
+  {:pre [(c/item? item)]}
   (make-prog item))
 
 (defn show

@@ -1,6 +1,4 @@
-(ns code.macros
-  (:require #?(:cljs [code.util :as u])
-            #?(:clj [code.util :as u])))
+(ns code.macros)
 
 (defmacro new-let [[var val & rest :as steps] end-expr]
   (if steps
@@ -11,4 +9,4 @@
   (let [[names items]
          (let [l (partition-all 2 bindings)]
            [(map first l) (map second l)])]
-    `((fn [[~@names]] ~@body) [~@items])))
+    `((fn [[~@names]] (code.util/blob ~@body)) [~@items])))

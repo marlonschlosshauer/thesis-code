@@ -10,4 +10,6 @@
    (fn [st ac]
      (c/return :action (if-not (bind/commit? ac) (bind/make-commit ac) ac)))))
 
-
+(defn blob [a]
+  (println a)
+  a)

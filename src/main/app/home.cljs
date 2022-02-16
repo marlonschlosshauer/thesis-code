@@ -5,7 +5,8 @@
             [app.views.stress :as stress]
             [app.views.registration :as registration]
             [app.views.combinations :as combinations]
-            [app.views.edgecases :as edge]))
+            [app.views.edgecases :as edge]
+            [app.views.evil :as evil]))
 
 (c/def-item display-views
   (dom/div
@@ -24,6 +25,7 @@
 
 (defn init []
   (main/run (.getElementById js/document "app")
-    display-views
+    ;;display-views
+    evil/main
     {:initial-state {:dressing "salad"}}))
 

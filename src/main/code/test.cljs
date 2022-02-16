@@ -1,6 +1,6 @@
 (ns code.test
   (:require [code.util])
-  (:require-macros [code.macros :as m]))
+  (:require-macros [code.wow :as m]))
 
 (m/like-ref-let [a 1
                  b 2

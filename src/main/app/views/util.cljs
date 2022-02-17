@@ -24,4 +24,4 @@
 (defn named-click-me! [name]
   (dom/div
     (dom/h3 (str name))
-    (click-me! (str name))))
+    (click-me! name)))

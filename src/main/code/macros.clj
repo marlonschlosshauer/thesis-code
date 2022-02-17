@@ -1,13 +1,17 @@
 (ns code.macros)
 
-;; TODO: check even arguments etc.
-;; TODO: bug: error on end of chain
-;; TODO: make version with-out end-expr
-(defmacro then [[var val & rest :as steps] end-expr]
+;; TODO: check even arguments etc
+(defmacro then
+  ([[var val & rest :as steps] end-expr]
   (if steps
     `(code.bind/then ~val (fn [~var] (then ~rest ~(seq end-expr))))
-    end-expr))
+    ;; TODO: end-expr has arity 0, could check for last var and pass
+    `(~end-expr))))
 
 ;; TODO check even arguments etc.
-(defmacro runner [x y]
-  `(code.bind/runner (then ~x ~y)))
+(defmacro runner
+  ([x]
+   (runner x (fn [])))
+  ([x y]
+   `(code.bind/runner (then ~x  ~y))))
+

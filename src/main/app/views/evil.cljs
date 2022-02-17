@@ -5,32 +5,30 @@
             [code.bind :as b]
             [app.views.util :as u]
             [code.util])
-  (:require-macros [code.wow :as m]))
+  (:require-macros [code.macros :as m]))
 
 (defn item [name]
   (b/return (u/named-click-me! name)))
 
-(def scene2
-  (dom/div
-   (b/runner
-    (b/then
-     (b/then
-      (b/then
-       (b/then
-        (item 1)
-        (fn [x] (item (inc x))))
-       (fn [y] (item (inc y))))
-      (fn [z] (item (inc z))))
-     (fn [v] (item (inc v)))))))
-
-(def BOOM
+(def test-macro-then
   (b/runner
-   (m/fatmamba [a (item 1)
-                b (item 2)
-                c (item 3)]
-               (fn [x] (println x) x))))
+   (m/then [a (item 1)
+            b (item 2)
+            c (item 3)]
+           (fn [x] (println x) x))))
+
+(def test-macro-runner
+  (m/runner [a (item 1)
+             b (item 2)
+             c (item 3)]
+            (fn [x] (println x) x)))
 
 (def main
   (dom/div
-   BOOM))
+   (dom/div
+    (dom/h2 "test-macro-then")
+    test-macro-then)
+   (dom/div
+    (dom/h2 "test-macro-runner")
+    test-macro-runner)))
 

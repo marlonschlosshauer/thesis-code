@@ -11,7 +11,7 @@
 ;; TODO check even arguments etc.
 (defmacro runner
   ([x]
-   (runner x (fn [])))
+   `(runner ~x (fn [])))
   ([x y]
    `(code.bind/runner (then ~x  ~y))))
 

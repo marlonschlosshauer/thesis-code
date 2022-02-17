@@ -52,9 +52,6 @@
   {:pre [(c/item? item)]}
   (make-prog item))
 
-(defn usefull? [x]
-  (or (bind? x) (prog? x) (c/item? x)))
-
 (defn show
   "Display `Item` inside of `Prog` (or `Bind`)"
   [x]
@@ -83,29 +80,3 @@
            ;; TODO: what if it's just prog?
            (if (and (commit? ac) (bind? st))
              (c/return :state ((bind-continuation st) (commit-payload ac))))))))))
-
-(comment
-  (defn runner
-  "Show `Prog` (or `Bind`). Returns an `Item`"
-  ([b]
-   (runner b (fn [_])))
-  ([p cont]
-   ;;{:pre [(or (bind? p) (prog? p))]
-   ;; :post [(c/item? %)]}
-   ;; inner state of book-keeping is the bind
-   (c/isolate-state
-    p
-    (c/dynamic
-     (fn [st]
-       (if (not (usefull? st))
-         (cont st)
-         (c/handle-action
-          ;; display item in bind/prog
-          (show st) ;; TODO: lens
-          (fn [st ac]
-            ;; call continuation of bind on commit
-            ;; TODO: what if it's just prog?
-            (if (and (commit? ac) (bind? st))
-              (c/return :state ((bind-continuation st) (commit-payload ac)))))))))))))
-
-

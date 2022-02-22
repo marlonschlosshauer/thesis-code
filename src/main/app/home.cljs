@@ -56,6 +56,7 @@
 (defn init []
   (main/run (.getElementById js/document "app")
     display-views
-    {:initial-state {:dressing "salad"}}))
+    ;;(stress/main 0)
+    {:initial-state {:dressing 1}}))
 
 

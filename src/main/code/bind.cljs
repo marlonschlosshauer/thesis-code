@@ -77,12 +77,12 @@
   (c/local-state
    b
    (c/dynamic
-    (fn [[outter st]]
+    (fn [[_ inner]]
       (c/handle-action
        ;; display item in bind/prog
        (c/focus
         first-lens
-        (show st))
+        (show inner))
        (fn [[outter st] ac]
          ;; call continuation of bind on commit
          (if (and (commit? ac) (bind? st))

@@ -2,8 +2,8 @@
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.main :as main]
             [reacl-c.dom :as dom]
-            [code.bind :as b]
-            [app.views.util :as u])
+            [app.views.util :as u]
+            [code.bind :as b])
   (:require-macros [code.macros :as m]))
 
 (defn item [name]

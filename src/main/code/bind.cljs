@@ -1,7 +1,9 @@
 (ns code.bind
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.main :as main]
-            [reacl-c.dom :as dom]))
+            [reacl-c.dom :as dom])
+  ;;(:require-macros [code.bind])
+  )
 
 (defrecord Commit [payload])
 (defn make-commit
@@ -37,8 +39,8 @@
 (defn then
   "Bind a `Prog` to a continuation. Returns a `Bind`. cont should return a `Bind` or `Prog`"
   [prog cont]
-  {:pre [(and (or (bind? prog) (prog? prog) (c/item? prog))
-              (fn? cont))]
+  {:pre [(or (bind? prog) (prog? prog) (c/item? prog))
+         (fn? cont)]
    :post [(bind? %)]}
   (if (bind? prog)
     ;; if left hand is already a bind, swap (csp transformation)

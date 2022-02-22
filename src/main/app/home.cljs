@@ -8,7 +8,8 @@
             [app.views.edgecases :as edge]
             [app.views.macros :as macros]
             [app.views.cont :as cont]
-            [app.views.regm :as regm]))
+            [app.views.regm :as regm]
+            [app.views.testm :as testm]))
 
 (def border-style
   {:border "1px solid black" :padding "15px" :margin "5px"})
@@ -46,7 +47,10 @@
              cont/main)
     (dom/div {:style border-style}
              (dom/h1 "registration-macros")
-             regm/main))))
+             regm/main)
+    (dom/div {:style border-style}
+             (dom/h1 "registration-macros")
+             testm/main))))
 
 (c/def-item display-views
   (dom/div
@@ -56,7 +60,6 @@
 (defn init []
   (main/run (.getElementById js/document "app")
     display-views
-    ;;(stress/main 0)
     {:initial-state {:dressing 1}}))
 
 

@@ -24,17 +24,16 @@
   {:pre [(c/item? item)]}
   (->Prog item))
 
-(defrecord Bind [prog continuation called]) ;; TODO: remove "called"
+(defrecord Bind [prog continuation])
 (defn make-bind
   "Takes a `Prog` and a `continuation` of type (a -> Prog b) and returns a Bind"
   [prog continuation]
   {:pre [(prog? prog)]}
-  (->Bind prog continuation false))
+  (->Bind prog continuation))
 
 (defn bind? [x] (instance? Bind x))
 (defn bind-continuation [b] (:continuation b))
 (defn bind-item [b] (:prog b))
-(defn bind-called [b] (:called b))
 
 (defn then
   "Bind a `Prog` to a continuation. Returns a `Bind`. cont should return a `Bind` or `Prog`"
@@ -57,8 +56,7 @@
 (defn show
   "Display `Item` inside of `Prog` (or `Bind`)"
   [x]
-  {;;:pre [(or (bind? x) (prog? x) (c/item? x))] ;; TODO: is this still needed?
-   :post [(c/item? %)]}
+  {:post [(c/item? %)]}
   (cond
     (prog? x) (prog-item x)
     (bind? x) (prog-item (bind-item x))

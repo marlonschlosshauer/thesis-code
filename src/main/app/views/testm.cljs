@@ -59,6 +59,12 @@
           (println state)
           (c/return :state state))))))))
 
+(def test-uneven-count-then
+  (b/runner
+   (m/then [a (item 1)
+            ] (fn [])) ;; error removed to allow for compilation
+   ))
+
 (def main
   (dom/div
    (dom/div
@@ -72,4 +78,7 @@
     (stress-with-macro 0))
    (dom/div
     (dom/h2 "emit through runner")
-    emit-through)))
+    emit-through)
+   (dom/div
+    (dom/h2 "test uneven count then macro")
+    test-uneven-count-then)))

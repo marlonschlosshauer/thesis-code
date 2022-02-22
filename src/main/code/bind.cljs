@@ -22,7 +22,7 @@
   {:pre [(c/item? item)]}
   (->Prog item))
 
-(defrecord Bind [prog continuation called])
+(defrecord Bind [prog continuation called]) ;; TODO: remove "called"
 (defn make-bind
   "Takes a `Prog` and a `continuation` of type (a -> Prog b) and returns a Bind"
   [prog continuation]
@@ -55,7 +55,7 @@
 (defn show
   "Display `Item` inside of `Prog` (or `Bind`)"
   [x]
-  {;;:pre [(or (bind? x) (prog? x) (c/item? x))]
+  {;;:pre [(or (bind? x) (prog? x) (c/item? x))] ;; TODO: is this still needed?
    :post [(c/item? %)]}
   (cond
     (prog? x) (prog-item x)
@@ -63,20 +63,27 @@
     (c/item? x) x
     :else (c/fragment)))
 
+(defn first-lens
+  ([[first & _]]
+   first)
+  ([[_ & rest] small]
+   (vec (cons small rest))))
+
 (defn runner
   "Show `Prog` (or `Bind`). Returns an `Item`"
   [b]
   {:pre [(or (bind? b) (prog? b))]}
   ;; inner state of book-keeping is the bind
-  (c/isolate-state
+  (c/local-state
    b
    (c/dynamic
-    (fn [st]
+    (fn [[outter st]]
       (c/handle-action
-         ;; display item in bind/prog
-         (show st) ;; TODO: lens
-         (fn [st ac]
-           ;; call continuation of bind on commit
-           ;; TODO: what if it's just prog?
-           (if (and (commit? ac) (bind? st))
-             (c/return :state ((bind-continuation st) (commit-payload ac))))))))))
+       ;; display item in bind/prog
+       (c/focus
+        first-lens
+        (show st))
+       (fn [[outter st] ac]
+         ;; call continuation of bind on commit
+         (if (and (commit? ac) (bind? st))
+           (c/return :state [outter ((bind-continuation st) (commit-payload ac))]))))))))

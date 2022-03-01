@@ -32,11 +32,6 @@
                      (u/wrap-state (c/fragment))))])))))
 
 
-(defn http-get [url]
-  ;; TODO: no reacl-c-basics/ajax :(
-  )
-
-
 (defn stress-with-macro [n]
   (m/runner [a (item n)
              _ (stress-with-macro (inc a))]))

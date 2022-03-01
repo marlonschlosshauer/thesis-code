@@ -9,7 +9,9 @@
             [app.views.macros :as macros]
             [app.views.cont :as cont]
             [app.views.regm :as regm]
-            [app.views.testm :as testm]))
+            [app.views.testm :as testm]
+            [app.views.testhttp :as http]
+            ))
 
 (def border-style
   {:border "1px solid black" :padding "15px" :margin "5px"})
@@ -50,7 +52,10 @@
              regm/main)
     (dom/div {:style border-style}
              (dom/h1 "registration-macros")
-             testm/main))))
+             testm/main)
+    (dom/div {:style border-style}
+             (dom/h1 "http-macro-test")
+             http/main))))
 
 (c/def-item display-views
   (dom/div

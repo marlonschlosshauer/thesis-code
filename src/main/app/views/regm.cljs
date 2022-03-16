@@ -7,6 +7,13 @@
   (:require-macros [code.macros :as m]))
 
 (def main
-  (m/runner [personal personal-info
-             code create-and-send-verification-code
-             d (done [personal code])]))
+  (c/local-state
+   {:dressing 1}
+   (c/dynamic
+    (fn [state]
+      (dom/div
+       (dom/p (pr-str state))
+       (m/runner [personal personal-info
+                  code create-and-send-verification-code
+                  d (done [personal code])]
+                 (fn [] (c/once (fn [] (c/return :state {:dressing 1}))))))))))

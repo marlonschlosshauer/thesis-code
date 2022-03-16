@@ -56,7 +56,7 @@
 (defn show
   "Display `Item` inside of `Prog` (or `Bind`)"
   [x]
-  {:post [(c/item? %)]}
+  ;;{:post [(c/item? %)]} ;; TODO
   (cond
     (prog? x) (prog-item x)
     (bind? x) (prog-item (bind-item x))
@@ -77,13 +77,30 @@
   (c/local-state
    b
    (c/dynamic
-    (fn [[_ inner]]
-      (c/handle-action
-       ;; display item in bind/prog
-       (c/focus
-        first-lens
-        (show inner))
-       (fn [[outter st] ac]
-         ;; call continuation of bind on commit
-         (if (and (commit? ac) (bind? st))
-           (c/return :state [outter ((bind-continuation st) (commit-payload ac))]))))))))
+    (fn [[outter inner]]
+      (dom/div
+       (dom/samp (pr-str inner))
+       (cond
+         ;; item & value: return
+         ;; fn: call
+         ;; prog & bind: handle
+         ;; nil: fragment
+         (nil? inner) (c/fragment)
+         (fn? inner)
+         (c/fragment
+          (c/once (fn [] (c/return :state [(inner outter) nil]))))
+
+         :else (c/handle-action
+                ;; display item in bind/prog
+                (c/focus
+                 first-lens
+                 (show inner))
+                (fn [[outter st] ac]
+                  ;; call continuation of bind on commit
+                  (if (and (commit? ac) (bind? st))
+                    (c/return :state [outter ((bind-continuation st) (commit-payload ac))])
+                    (c/return :action ac))))
+         ))))))
+
+
+

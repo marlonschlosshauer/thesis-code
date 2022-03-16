@@ -64,7 +64,8 @@
 
 (defn init []
   (main/run (.getElementById js/document "app")
-    display-views
-    {:initial-state {:dressing 1}}))
+    ;;display-views
+    testm/main
+    {:initial-state {:user-id 41251 :version 3}}))
 
 

@@ -6,7 +6,7 @@
   {:pre [(even? (count steps))]}
   (if steps
     `(code.bind/then ~val (fn [~var] (then ~rest ~(seq end-expr))))
-    `(~end-expr)))
+    `~end-expr))
 
 (defmacro runner
   "Show `Prog` (or `Bind`). Returns an `Item`"

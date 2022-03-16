@@ -96,19 +96,6 @@
       (dom/h2 "test end expr return state")
       test-end-expr-return-state))))
 
-
-(def test-end-expr-return-state
-  (c/local-state
-   1
-   (c/dynamic
-     (fn [[bla state]]
-       (dom/div
-        (dom/pre (pr-str [bla state]))
-        (m/runner [_ (item "123")
-                   second (item 5)]
-                  (fn [[o i]]
-                    [(assoc o :version second) i])))))))
-
 (def woof
   (u/wrap-state
    (c/local-state
@@ -122,6 +109,23 @@
           (c/init
            (c/return :state [(assoc o :version 5) {:product 534 :status :payed}])))))
       )))))
+
+(def test-end-expr-return-state
+  (c/local-state
+   1
+   (c/dynamic
+     (fn [[bla state]]
+       (dom/div
+        (dom/pre (pr-str [bla state]))
+        (m/runner [_ (item "123")
+                   second (item 5)]
+                  (fn [[o i]]
+                    (c/return
+                     :state
+                     [[(assoc o :version second) i] inner]))))))))
+
+ ;; TODO: kriegt fn letzten Wert?
+
 
 (def main
   (dom/div

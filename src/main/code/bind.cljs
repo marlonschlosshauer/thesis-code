@@ -81,15 +81,13 @@
       (dom/div
        (dom/samp (pr-str inner))
        (cond
-         ;; item & value: return
-         ;; fn: call
-         ;; prog & bind: handle
-         ;; nil: fragment
          (nil? inner) (c/fragment)
-         (fn? inner)
-         (c/fragment
-          (c/once (fn [] (c/return :state [(inner outter) nil]))))
-
+         (fn? inner) (c/fragment
+                      (c/focus
+                       first-lens
+                       (dom/div
+                        (dom/samp (pr-str inner))
+                        (c/once (fn [] (inner outter))))))
          :else (c/handle-action
                 ;; display item in bind/prog
                 (c/focus

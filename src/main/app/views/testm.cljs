@@ -60,77 +60,23 @@
             ] (fn [])) ;; error removed to allow for compilation
    ))
 
-(comment
-  (def test-end-expr-return-state
-  (c/local-state
-   {:number 0}
-   (c/handle-action
-    (dom/div
-     (c/with-state-as st
-       (dom/pre (pr-str st)))
-     (c/fragment
-      (c/init
-       (c/return :state "haha"))))
-    (fn [_ ac]
-      (c/return :state ac))))))
-
-(comment
-  (def main
-    (dom/div
-     (dom/div
-      (dom/h2 "mix primitives and macros")
-      mix-primitives-macros)
-     (dom/div
-      (dom/h2 "implicit state leak through runner")
-      implicit-state-leak-through-runner)
-     (dom/div
-      (dom/h2 "stress but with macros")
-      (stress-with-macro 0))
-     (dom/div
-      (dom/h2 "emit through runner")
-      emit-through)
-     (dom/div
-      (dom/h2 "test uneven count then macro")
-      test-uneven-count-then)
-     (dom/div
-      (dom/h2 "test end expr return state")
-      test-end-expr-return-state))))
-
-(def woof
-  (u/wrap-state
-   (c/local-state
-    {:product 534 :status :purchased}
-    (u/wrap-state
-     (c/dynamic
-      (fn [[o i]]
-        (dom/div
-         (dom/h2 "woof")
-         (c/fragment
-          (c/init
-           (c/return :state [(assoc o :version 5) {:product 534 :status :payed}])))))
-      )))))
-
 (def test-end-expr-return-state
   (c/local-state
    1
    (c/dynamic
      (fn [[bla state]]
        (dom/div
-        (dom/pre (pr-str [bla state]))
-        (m/runner [_ (item "123")
-                   second (item 5)]
+        ;;(dom/pre (pr-str [bla state]))
+        (m/runner [a (item 1)
+                   b (item 2)]
                   (fn [[o i]]
-                    (c/return
-                     :state
-                     [[(assoc o :version second) i] inner]))))))))
-
- ;; TODO: kriegt fn letzten Wert?
-
+                    (println (str "test: " (pr-str [o i])))
+                    (c/return :state [(assoc o :version b) i])
+                    )))))))
 
 (def main
   (dom/div
      (dom/h2 "test end expr return state")
-     test-end-expr-return-state)
-  ;;woof
-  )
+     test-end-expr-return-state))
+
 

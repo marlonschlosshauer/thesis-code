@@ -136,7 +136,6 @@
            (if (commit? ac)
              (if (bind? inner)
                (let [res ((bind-continuation inner) (commit-payload ac))]
-                 (println (pr-str res))
                  (if (fn? res)
                    (let [res-res (res outer)]
                      (c/return :state [(c/returned-state res-res) nil]))

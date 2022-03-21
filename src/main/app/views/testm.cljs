@@ -97,7 +97,8 @@
   (dom/div
      (dom/h2 "test end expr return state")
      test-end-expr-return-state
-     ;;test-change-state-during-cause-reset
+     (dom/h2 "test-change-state-during-cause-reset")
+     test-change-state-during-cause-reset
      ))
 
 

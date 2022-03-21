@@ -69,7 +69,7 @@
   ([[_ & rest] small]
    (vec (cons small rest))))
 
-(defn runner
+(defn runnerr
   [prog]
   (c/local-state
    prog
@@ -85,6 +85,7 @@
             first-lens ;; hide inner state (bookkeping) from item
             (show inner))
            (fn [[outer st] ac]
+             (println (pr-str ac))
              (if (commit? ac)
                (if (bind? st)
                  (let [res ((bind-continuation st) (commit-payload ac))]
@@ -93,7 +94,7 @@
                      (or (bind? res) (prog? res)) (c/return :state [outer res])
                      (fn? res) (c/return
                                 :action (fn [] (res outer))
-                                :state [c/keep-state nil])
+                                :state [outer c/keep-state])
                      ;; result is non-bind -> emit (?) TODO
                      :else (c/return :action ac)
                      ))
@@ -105,22 +106,41 @@
                (c/return :action ac))
              ))))))
     (fn [[outer inner] ac]
-      (if (c/returned? ac)
-        (c/return :state [(ac) c/keep-state])
-        (c/return :action ac))))
-   ))
+      (if (fn? ac)
+        (let [res (ac)]
+          (println (pr-str {:res res
+                            :outer outer
+                            :inner inner}))
+          (c/merge-returned
+           res
+           (c/return :state [(c/returned-state res) nil])))
+        (c/return :action ac))))))
 
 
 
+(defn runner
+  [prog]
+  (c/local-state
+   prog
+   (c/dynamic
+    (fn [[outer inner]]
+      (dom/div
+       (dom/samp (pr-str [outer inner]))
+       (if (nil? inner)
+        (c/fragment)
+        (c/handle-action
+         (c/focus
+          first-lens
+          (show inner))
+         (fn [[outer inner] ac]
+           (if (commit? ac)
+             (if (bind? inner)
+               (let [res ((bind-continuation inner) (commit-payload ac))]
+                 (println (pr-str res))
+                 (if (fn? res)
+                   (let [res-res (res outer)]
+                     (c/return :state [(c/returned-state res-res) nil]))
+                   (c/return :state [outer ((bind-continuation inner) (commit-payload ac))])))
+               (c/return :action ac))
+             (c/return :action ac))))))))))
 
-(comment
-  (c/return :action (fn [] (end-expr outer))
-            :state [c/keep-state nil])
-  )
-
-
-(comment
-  (c/merge-returned
-   res-res
-   (c/return :state [(c/returned-state res-res) nil])) ;; sets inner state to nil
-  )

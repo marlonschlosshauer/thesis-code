@@ -66,6 +66,6 @@
   (main/run (.getElementById js/document "app")
     ;;display-views
     testm/main
-    {:initial-state {:user-id 41251 :version 3}}))
+    {:initial-state {:was-changed false}}))
 
 

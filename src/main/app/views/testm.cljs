@@ -64,19 +64,40 @@
   (c/local-state
    1
    (c/dynamic
-     (fn [[bla state]]
-       (dom/div
-        ;;(dom/pre (pr-str [bla state]))
-        (m/runner [a (item 1)
-                   b (item 2)]
-                  (fn [[o i]]
-                    (println (str "test: " (pr-str [o i])))
-                    (c/return :state [(assoc o :version b) i])
-                    )))))))
+    (fn [[bla state]]
+      ;; Timestamps differ between initial and second run
+      ;; step #1 and #2 are not loaded from some cache
+      ;; but instead generated again, after end-expr runs (and changes global state)
+      (m/runner [a (item (str "#1 (Timestamp: " (.now js/Date) ")"))
+                 b (item (str "#2 (Timestamp: " (.now js/Date) ")"))]
+                (fn [[o i]]
+                  (c/return :state [(assoc o :was-changed true) b])))))))
+
+(def test-change-state-during-cause-reset
+  ;; Step 2 changes outer state
+  ;; (by emiting action that is caught in parent and handled)
+  ;; which should cause reset
+  ;; Result: It does not! -> change of outer-state does not always cause reset
+  (c/local-state
+   {:runs 0}
+   (c/handle-action
+    (m/runner [a (item 1)
+               _ (b/return
+                  (dom/button {:onclick (fn [_ _] (c/return :action :inc))} "send action upwards"))
+               b (item 2)]
+              (fn [[o i]]
+                (c/return :state [(assoc o :runs 0) i])))
+    (fn [[outer inner] ac]
+      (if (= ac :inc)
+        (c/return :state [outer (assoc inner :runs (inc (:runs inner)))])
+        (c/return :action ac))))))
+
 
 (def main
   (dom/div
      (dom/h2 "test end expr return state")
-     test-end-expr-return-state))
+     test-end-expr-return-state
+     ;;test-change-state-during-cause-reset
+     ))
 
 

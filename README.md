@@ -1,7 +1,7 @@
 # Sequential composition for reacl-c
 
 ## What is this?
-This repo hosts the code for my bachelor thesis ["Compositions of UI elements in reacl-c"](https://github.com/marlonschlosshauer/thesis). It adds support for sequential composition to [reacl-c](https://github.com/active-group/reacl-c/).
+This repo hosts the code for my bachelor thesis ["Composition of UI elements in reacl-c using monads"](https://github.com/marlonschlosshauer/thesis). It adds support for sequential composition to [reacl-c](https://github.com/active-group/reacl-c/).
 
 ## API
 

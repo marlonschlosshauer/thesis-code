@@ -2,7 +2,7 @@
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.main :as main]
             [reacl-c.dom :as dom]
-            [code.bind :as bind]
+            [code.core :as bind :include-macros true]
             [app.views.util :as util]))
 
 (c/def-item personal-info
@@ -50,11 +50,11 @@
    (dom/samp (pr-str data))))
 
 (c/def-item signup-process
-  (bind/runner
-   (bind/then
+  (bind/-runner
+   (bind/-then
     (bind/return personal-info)
     (fn [personal]
-      (bind/then (bind/return create-and-send-verification-code)
+      (bind/-then (bind/return create-and-send-verification-code)
                       (fn [code] (dom/div (done {:personal personal :code code}))))))))
 
 (c/def-item main signup-process)

@@ -2,9 +2,8 @@
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.dom :as dom]
             [app.views.util :as u]
-            [code.bind :as b]
-            [ajax.core :as ajax])
-  (:require-macros [code.macros :as m]))
+            [code.core :as b :include-macros true]
+            [ajax.core :as ajax]))
 
 
 (defrecord Request [f uri options])
@@ -58,7 +57,7 @@
 
 
 (def test-http
-  (m/runner [first (b/return (get-random 1 6))
+  (b/runner [first (b/return (get-random 1 6))
              _ (b/return (u/named-click-me! (str "First result:" first ", click to continue!")))
              second (b/return (get-random 7 9))
              _ (b/return (dom/div (str "Results: " (pr-str [first second]))))]))

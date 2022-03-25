@@ -2,16 +2,15 @@
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.dom :as dom]
             [app.views.util :as u]
-            [code.bind :as b])
-  (:require-macros [code.macros :as m]))
+            [code.core :as b :include-macros true]))
 
 (defn item [name]
   (b/return (u/named-click-me! name)))
 
 (def mix-primitives-macros
-  (m/runner [a (item 1)
-             b (b/then (item (inc a))
-                       (fn [] (b/then (item (+ a 2))
+  (b/runner [a (item 1)
+             b (b/-then (item (inc a))
+                       (fn [] (b/-then (item (+ a 2))
                                       (fn [x] (item (inc x))))))
              c (item (+ a b))]
             (fn []
@@ -26,14 +25,14 @@
      (dom/div
       (dom/p "outside of component")
       (dom/pre (pr-str state))
-      (m/runner [a (b/return
+      (b/runner [a (b/return
                     (dom/div
                      (dom/p "inside of component:")
                      (u/wrap-state (c/fragment))))])))))
 
 
 (defn stress-with-macro [n]
-  (m/runner [a (item n)
+  (b/runner [a (item n)
              _ (stress-with-macro (inc a))]))
 
 
@@ -47,7 +46,7 @@
       (dom/div
        (dom/pre (pr-str state))
        (c/handle-action
-        (m/runner [a (b/return
+        (b/runner [a (b/return
                       (dom/button {:onclick (fn [_ _] (c/return :action "test"))} "click-me!"))
                    b (b/return (dom/p "this shouldn't be happening'"))])
         (fn [state _]
@@ -55,8 +54,8 @@
           (c/return :state state))))))))
 
 (def test-uneven-count-then
-  (b/runner
-   (m/then [a (item 1)
+  (b/-runner
+   (b/then [a (item 1)
             ] (fn [])) ;; error removed to allow for compilation
    ))
 

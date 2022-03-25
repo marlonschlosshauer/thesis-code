@@ -2,7 +2,7 @@
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.main :as main]
             [reacl-c.dom :as dom]
-            [code.bind :as b]
+            [code.core :as b :include-macros true]
             [app.views.util :as u]))
 
 (defn item [name]
@@ -11,10 +11,10 @@
 (def scene0
   (dom/div
    (dom/p "((Prog 1 >>= (Prog 2 >>= Prog 3)) >>= Prog 4) >>= Prog 5")
-   (b/runner
-    (b/then
-     (b/then
-      (b/then
+   (b/-runner
+    (b/-then
+     (b/-then
+      (b/-then
        (item "Prog 1")
        (fn [](b/then (item "Prog 2") (fn [] (item "Prog 3")))))
       (fn [] (item "Prog 4")))
@@ -23,13 +23,13 @@
 (def scene1
   (dom/div
    (dom/p "Prog 1 >>= (((Prog 2 >>= Prog 3) >>= Prog 4) >>= Prog 5)")
-   (b/runner
-    (b/then
-     (b/then
-      (b/then
+   (b/-runner
+    (b/-then
+     (b/-then
+      (b/-then
        (item "Prog 1")
        (fn []
-         (b/then (item "Prog 2")
+         (b/-then (item "Prog 2")
                  (fn [] (item "Prog 3")))))
       (fn [] (item "Prog 4")))
      (fn [] (item "Prog 5"))))))
@@ -37,11 +37,11 @@
 (def scene2
   (dom/div
    (dom/p "(((Prog 1 >>= Prog 2) >>= Prog 3) >>= Prog 4) >>= Prog 5")
-   (b/runner
-    (b/then
-     (b/then
-      (b/then
-       (b/then
+   (b/-runner
+    (b/-then
+     (b/-then
+      (b/-then
+       (b/-then
         (item "Prog 1")
         (fn [] (item "Prog 2")))
        (fn [] (item "Prog 3")))
@@ -51,45 +51,45 @@
 (def scene3
   (dom/div
    (dom/p "Prog 1 >>= (Prog 2 >>= Prog 3)")
-   (b/runner
-    (b/then
+   (b/-runner
+    (b/-then
      (item "Prog 1")
      (fn []
-       (b/then
+       (b/-then
         (item "Prog 2")
         (fn [] (item "Prog 3"))))))))
 
 (def scene4
   (dom/div
    (dom/p "Prog 1")
-   (b/runner
+   (b/-runner
     (item "Prog 1"))))
 
 (def scene5
   (dom/div
    (dom/p "Prog 1 >>= Prog 2 >>= Prog 3 >>= Prog 4 >>= Prog 5")
-   (b/runner
-    (b/then
+   (b/-runner
+    (b/-then
      (item "Prog 1")
-     (fn [] (b/then
+     (fn [] (b/-then
              (item "Prog 2")
-             (fn [] (b/then
+             (fn [] (b/-then
                      (item "Prog 3")
-                     (fn [] (b/then (item "Prog 4")
+                     (fn [] (b/-then (item "Prog 4")
                                     (fn [] (item "Prog 5"))))))))))))
 
 (def scene6
   (dom/div
    (dom/p "Prog 1 >>= (Prog 2 >>= Prog 3) >>= (Prog 4 >>= Prog 5)")
-   (let [p1 (b/then (item "Prog 2")
+   (let [p1 (b/-then (item "Prog 2")
                     (fn [] (item "Prog 3")))
-         p2 (b/then (item "Prog 4")
+         p2 (b/-then (item "Prog 4")
                     (fn [] (item "Prog 5")))]
-     (b/runner
-      (b/then
+     (b/-runner
+      (b/-then
        (item "Prog 1")
        (fn []
-         (b/then p1
+         (b/-then p1
                  (fn [] p2))))))))
 
 (def main

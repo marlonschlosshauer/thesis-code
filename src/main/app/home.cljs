@@ -67,4 +67,3 @@
     display-views
     {:initial-state {:dressing 1}}))
 
-

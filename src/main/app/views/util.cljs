@@ -2,7 +2,7 @@
   (:require [reacl-c.core :as c :include-macros true]
             [reacl-c.main :as main]
             [reacl-c.dom :as dom]
-            [code.bind :as b]))
+            [code.core :as b :include-macros true]))
 
 (defn wrap-state [item]
   (c/dynamic

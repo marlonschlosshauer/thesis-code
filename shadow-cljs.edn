@@ -5,9 +5,7 @@
   "src/main"
   "src/test"]
 
- :dev-http {8080 "target/"
-            8021 "test/browser"
-            8022 "test/node"}
+ :dev-http {8080 "target/"}
 
  :dependencies
  [[org.clojure/clojure "1.9.0" :scope "provided"]
@@ -22,16 +20,5 @@
    :asset-path "."
    :target :browser
    :modules {:main {:init-fn app.home/init}}}
-  :test-node
-  {:target :node-test
-   :output-to "test/node/node-tests.js"
-   :ns-regexp "-test$"
-   :autorun true}
-  :test
-  {:target :node-test
-   :output-to "test/node/node-tests.js"
-   :ns-regexp "-test$"
-   :autorun true}
-  :test-browser
-  {:target :browser-test
-   :test-dir "test/browser"}}}
+  }
+ }

@@ -1,7 +1,9 @@
 node_modules/
 public/js
 
-/target
+target/*
+!target/index.html
+
 /checkouts
 /src/gen
 
